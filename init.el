@@ -465,7 +465,6 @@
      (C . t)
      (dot . t)
      (ditaa . t)
-     (http .t)
      (sh . t)
      (python . t)
      (R . t)

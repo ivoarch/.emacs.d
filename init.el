@@ -440,6 +440,15 @@
 (use-package conf-mode
   :mode ("\\.*rc$" . conf-unix-mode))
 
+(use-package ssh-config-mode
+  :ensure t
+  :init (autoload 'ssh-config-mode "ssh-config-mode" t)
+  (add-hook 'ssh-config-mode-hook 'turn-on-font-lock)
+  :mode (("/\\.ssh/config\\'"     . ssh-config-mode)
+         ("/sshd?_config\\'"      . ssh-config-mode)
+         ("/known_hosts\\'"       . ssh-known-hosts-mode)
+         ("/authorized_keys2?\\'" . ssh-authorized-keys-mode)))
+
 (use-package flycheck
   :ensure t
   :config

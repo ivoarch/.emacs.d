@@ -18,6 +18,9 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+(setq user-full-name "Ivaylo Kuzev"
+      user-mail-address "ivkuzev@gmail.com")
+
 ;; Always load newest byte code
 (setq load-prefer-newer t)
 
@@ -31,11 +34,11 @@
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
-(defconst ivoarch-savefile-dir (expand-file-name "savefile" user-emacs-directory))
+(defconst savefile-dir (expand-file-name "savefile" user-emacs-directory))
 
 ;; create the savefile dir if it doesn't exist
-(unless (file-exists-p ivoarch-savefile-dir)
-  (make-directory ivoarch-savefile-dir))
+(unless (file-exists-p savefile-dir)
+  (make-directory savefile-dir))
 
 ;; Turn off mouse interface early in startup to avoid momentary display
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
@@ -44,6 +47,9 @@
 (if (fboundp 'blink-cursor-mode) (blink-cursor-mode -1))
 (if (fboundp 'use-file-dialog) (setq use-file-dialog nil))
 (if (fboundp 'use-dialog-box) (setq use-dialog-box nil))
+
+;; no fringes
+(set-fringe-mode 0)
 
 ;; Show a marker in the left fringe for lines not in the buffer
 (setq indicate-empty-lines t)
@@ -254,7 +260,7 @@
 (require 'saveplace)
 (use-package saveplace
   :config
-  (setq save-place-file (expand-file-name "saveplace" ivoarch-savefile-dir))
+  (setq save-place-file (expand-file-name "saveplace" savefile-dir))
   ;; activate it for all buffers
   (setq-default save-place t))
 
@@ -266,7 +272,7 @@
         ;; save every minute
         savehist-autosave-interval 60
         ;; keep the home clean
-        savehist-file (expand-file-name "savehist" ivoarch-savefile-dir))
+        savehist-file (expand-file-name "savehist" savefile-dir))
   (savehist-mode +1))
 
 (use-package recentf
@@ -274,7 +280,7 @@
   :bind  ("C-x r" . ido-recentf-open)
   :config
   (progn
-    (setq recentf-save-file (expand-file-name "recentf" ivoarch-savefile-dir)
+    (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
           recentf-max-saved-items 50
           recentf-max-menu-items 15
           ;; disable recentf-cleanup on Emacs start, because it can cause
@@ -363,7 +369,7 @@
         ido-create-new-buffer 'always
         ido-use-filename-at-point 'guess
         ido-max-prospects 10
-        ido-save-directory-list-file (expand-file-name "ido.hist" ivoarch-savefile-dir)
+        ido-save-directory-list-file (expand-file-name "ido.hist" savefile-dir)
         ido-default-file-method 'selected-window
         ido-auto-merge-work-directories-length -1)
   (ido-mode +1))

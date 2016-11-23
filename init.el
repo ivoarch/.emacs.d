@@ -537,49 +537,10 @@ buffer is not visiting a file, prompt for a file name."
  ;; If there is more than one, they won't work right.
  '(auto-image-file-mode 1)
  '(browse-url-generic-program "gnome-open")
- '(custom-safe-themes
-   (quote
-    ("1b27e3b3fce73b72725f3f7f040fd03081b576b1ce8bbdfcb0212920aec190ad" "962dacd99e5a99801ca7257f25be7be0cebc333ad07be97efd6ff59755e6148f" "0e219d63550634bc5b0c214aced55eb9528640377daf486e13fb18a32bf39856" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
  '(doc-view-continuous t)
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startupinhibit-startup-screen t)
  '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!")
- '(nil nil t)
- '(nrepl-message-colors
-   (quote
-    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(package-selected-packages
-   (quote
-    (airline-themes powerline spacemacs-theme deft super-save flycheck ssh-config-mode js2-mode rainbow-mode rainbow-delimiters web-mode yaml-mode markdown-mode smex flx-ido ido-vertical-mode ido-ubiquitous move-text rpm-spec-mode exec-path-from-shell easy-kill magit zenburn-theme ace-window use-package)))
- '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
- '(vc-annotate-background "#2B2B2B")
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#BC8383")
-     (40 . "#CC9393")
-     (60 . "#DFAF8F")
-     (80 . "#D0BF8F")
-     (100 . "#E0CF9F")
-     (120 . "#F0DFAF")
-     (140 . "#5F7F5F")
-     (160 . "#7F9F7F")
-     (180 . "#8FB28F")
-     (200 . "#9FC59F")
-     (220 . "#AFD8AF")
-     (240 . "#BFEBBF")
-     (260 . "#93E0E3")
-     (280 . "#6CA0A3")
-     (300 . "#7CB8BB")
-     (320 . "#8CD0D3")
-     (340 . "#94BFF3")
-     (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3"))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(linum ((t (:foreground "dim gray" :slant italic))) t))
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)

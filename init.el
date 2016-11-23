@@ -149,13 +149,20 @@
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
 
-;; a couple nice definitions taken from emacs-starter-kit
-(defun sudo-edit (&optional arg)
-  "Open the current buffer (or prompt for file if ARG is non-nill) using sudo to edit as root."
-  (interactive "p")
-  (if (or arg (not buffer-file-name))
-      (find-file (concat "/sudo::" (ido-read-file-name "File: ")))
-    (find-alternate-file (concat "/sudo::" buffer-file-name))))
+;; http://gergely.polonkai.eu/2016/11/10/edit-file-as-other-user-in-emacs/
+(defun open-this-file-as-other-user (user)
+  "Edit current file as USER, using `tramp' and `sudo'.  If the current
+buffer is not visiting a file, prompt for a file name."
+  (interactive "sEdit as user (default: root): ")
+  (when (string= "" user)
+    (setq user "root"))
+  (let* ((filename (or buffer-file-name
+                       (read-file-name (format "Find file (as %s): "
+                                               user))))
+         (tramp-path (concat (format "/sudo:%s@localhost:" user) filename)))
+    (if buffer-file-name
+        (find-alternate-file tramp-path)
+      (find-file tramp-path))))
 
 ;; enable copy/paste from emacs to other apps
 (setq
@@ -229,6 +236,11 @@
   :ensure t
   :config
   (load-theme 'zenburn t))
+
+(use-package powerline
+  :ensure t
+  :config
+  (powerline-default-theme))
 
 (use-package magit
   :ensure t)
@@ -515,7 +527,7 @@
   (setq
      deft-use-filename-as-title t
      deft-extensions "org"
-     deft-directory "~/MEGA/Enotes/org"
+     deft-directory "~/Dropbox/Enotes/org"
      deft-text-mode 'org-mode))
 
 (custom-set-variables
@@ -525,19 +537,50 @@
  ;; If there is more than one, they won't work right.
  '(auto-image-file-mode 1)
  '(browse-url-generic-program "gnome-open")
+ '(custom-safe-themes
+   (quote
+    ("1b27e3b3fce73b72725f3f7f040fd03081b576b1ce8bbdfcb0212920aec190ad" "962dacd99e5a99801ca7257f25be7be0cebc333ad07be97efd6ff59755e6148f" "0e219d63550634bc5b0c214aced55eb9528640377daf486e13fb18a32bf39856" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
  '(doc-view-continuous t)
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startupinhibit-startup-screen t)
- '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!"
-)
+ '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!")
+ '(nil nil t)
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(package-selected-packages
+   (quote
+    (airline-themes powerline spacemacs-theme deft super-save flycheck ssh-config-mode js2-mode rainbow-mode rainbow-delimiters web-mode yaml-mode markdown-mode smex flx-ido ido-vertical-mode ido-ubiquitous move-text rpm-spec-mode exec-path-from-shell easy-kill magit zenburn-theme ace-window use-package)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#BC8383")
+     (40 . "#CC9393")
+     (60 . "#DFAF8F")
+     (80 . "#D0BF8F")
+     (100 . "#E0CF9F")
+     (120 . "#F0DFAF")
+     (140 . "#5F7F5F")
+     (160 . "#7F9F7F")
+     (180 . "#8FB28F")
+     (200 . "#9FC59F")
+     (220 . "#AFD8AF")
+     (240 . "#BFEBBF")
+     (260 . "#93E0E3")
+     (280 . "#6CA0A3")
+     (300 . "#7CB8BB")
+     (320 . "#8CD0D3")
+     (340 . "#94BFF3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3"))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(linum ((t (:foreground "dim gray" :slant italic))) t))
-)
-
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)
 ;; End:

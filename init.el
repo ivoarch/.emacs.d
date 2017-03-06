@@ -1,10 +1,11 @@
-;;; init.el --- My personal Emacs configuration file
+;; init.el --- My personal Emacs configuration file
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
 
 ;;; Code:
+(provide 'init.el)
 (require 'package)
 
 (add-to-list 'package-archives
@@ -149,29 +150,14 @@
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
 
-;; http://gergely.polonkai.eu/2016/11/10/edit-file-as-other-user-in-emacs/
-(defun open-this-file-as-other-user (user)
-  "Edit current file as USER, using `tramp' and `sudo'.  If the current
-buffer is not visiting a file, prompt for a file name."
-  (interactive "sEdit as user (default: root): ")
-  (when (string= "" user)
-    (setq user "root"))
-  (let* ((filename (or buffer-file-name
-                       (read-file-name (format "Find file (as %s): "
-                                               user))))
-         (tramp-path (concat (format "/sudo:%s@localhost:" user) filename)))
-    (if buffer-file-name
-        (find-alternate-file tramp-path)
-      (find-file tramp-path))))
-
 ;; enable copy/paste from emacs to other apps
 (setq
  interprogram-cut-function 'x-select-text
  interprogram-paste-function 'x-selection-value
  save-interprogram-paste-before-kill t
  select-active-regions t
- x-select-enable-clipboard t
- x-select-enable-primary t)
+ select-enable-clipboard t
+ select-enable-primary t)
 (global-set-key (kbd "C-w") #'clipboard-kill-region)
 (global-set-key (kbd "M-w") #'clipboard-kill-ring-save)
 (global-set-key (kbd "C-y") #'clipboard-yank)
@@ -226,6 +212,10 @@ buffer is not visiting a file, prompt for a file name."
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; Enable restarting Emacs from within Emacs
+(use-package restart-emacs
+  :ensure t)
+
 (use-package ace-window
   :ensure t
   :config
@@ -233,9 +223,10 @@ buffer is not visiting a file, prompt for a file name."
   :bind (("C-x o" . ace-window)))
 
 (use-package zenburn-theme
-  :ensure t
-  :config
-  (load-theme 'zenburn t))
+  :ensure t)
+
+(use-package auto-complete-clang
+  :ensure t)
 
 (use-package powerline
   :ensure t
@@ -274,23 +265,15 @@ buffer is not visiting a file, prompt for a file name."
   (savehist-mode +1))
 
 (use-package recentf
-  :ensure t
-  :bind  ("C-x r" . ido-recentf-open)
+  :bind  ("C-x C-r" . recentf-open-files)
   :config
-  (progn
-    (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
-          recentf-max-saved-items 50
-          recentf-max-menu-items 15
-          ;; disable recentf-cleanup on Emacs start, because it can cause
-          ;; problems with remote files
-          recentf-auto-cleanup 'never)
-    (defun ido-recentf-open ()
-      "Use `ido-completing-read' to \\[find-file] a recent file"
-      (interactive)
-      (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-          (message "Opening file...")
-        (message "Aborting")))
-    (recentf-mode +1)))
+  (setq recentf-save-file (expand-file-name "recentf" savefile-dir)
+        recentf-max-saved-items 500
+        recentf-max-menu-items 15
+        ;; disable recentf-cleanup on Emacs start, because it can cause
+        ;; problems with remote files
+        recentf-auto-cleanup 'never)
+(recentf-mode +1))
 
 (use-package windmove
   :config
@@ -336,12 +319,6 @@ buffer is not visiting a file, prompt for a file name."
   :config
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)))
-
-(use-package rpm-spec-mode
-  :mode (("\\.spec" . rpm-spec-mode))
-  :ensure t
-  :init
-  (autoload 'rpm-spec-mode "rpm-spec-mode.el" "RPM spec mode." t))
 
 (use-package move-text
   :ensure t
@@ -404,6 +381,9 @@ buffer is not visiting a file, prompt for a file name."
 (use-package yaml-mode
   :ensure t)
 
+(use-package toml-mode
+  :ensure t)
+
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :ensure t)
@@ -413,14 +393,24 @@ buffer is not visiting a file, prompt for a file name."
   :config
   (setq css-indent-offset 2))
 
-(use-package rainbow-delimiters
-  :ensure t)
-
 (use-package rainbow-mode
   :ensure t
   :config
   :init
   (add-hook 'css-mode-hook #'rainbow-mode))
+
+(use-package rainbow-delimiters
+  :ensure t)
+
+(use-package anaconda-mode
+  :ensure t
+  :config (progn
+            (add-hook 'python-mode-hook 'anaconda-mode)
+))
+
+(use-package php-mode
+  :ensure t
+  :defer t)
 
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode)
@@ -441,6 +431,12 @@ buffer is not visiting a file, prompt for a file name."
                 sh-indentation 2
                 sh-indent-comment t))
 
+(use-package rpm-spec-mode
+  :mode (("\\.spec" . rpm-spec-mode))
+  :ensure t
+  :init
+  (autoload 'rpm-spec-mode "rpm-spec-mode.el" "RPM spec mode." t))
+
 (use-package conf-mode
   :mode ("\\.*rc$" . conf-unix-mode))
 
@@ -452,6 +448,11 @@ buffer is not visiting a file, prompt for a file name."
          ("/sshd?_config\\'"      . ssh-config-mode)
          ("/known_hosts\\'"       . ssh-known-hosts-mode)
          ("/authorized_keys2?\\'" . ssh-authorized-keys-mode)))
+
+(use-package makefile-mode
+  :init
+  (add-hook 'makefile-gmake-mode-hook
+            (lambda () (setq indent-tabs-mode nil))))
 
 (use-package flycheck
   :ensure t
@@ -499,10 +500,10 @@ buffer is not visiting a file, prompt for a file name."
          :components ("enotes-content" "enotes-static"))
         ("enotes-content"
          ;; Directory for source files in org format
-         :base-directory "~/MEGA/Enotes/org/"
+         :base-directory "~/Dropbox/Enotes/org/"
          :base-extension "org"
          ;; Path to exported HTML files
-         :publishing-directory "~/MEGA/Enotes/public_html/"
+         :publishing-directory "~/Dropbox/Enotes/public_html/"
          ;;:publishing-function org-publish-org-to-html
          :publishing-function org-html-publish-to-html
          :html-html5-fancy t
@@ -513,9 +514,9 @@ buffer is not visiting a file, prompt for a file name."
          )
         ;; Path to Static files
         ("enotes-static"
-         :base-directory "~/MEGA/Enotes/files/"
+         :base-directory "~/Dropbox/Enotes/files/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/MEGA/Enotes/public_html/files/"
+         :publishing-directory "~/Dropbox/Enotes/public_html/files/"
          :recursive t
          :publishing-function org-publish-attachment
          ))))
@@ -537,11 +538,19 @@ buffer is not visiting a file, prompt for a file name."
  ;; If there is more than one, they won't work right.
  '(auto-image-file-mode 1)
  '(browse-url-generic-program "gnome-open")
- '(doc-view-continuous t)
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startupinhibit-startup-screen t)
  '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!")
- '(linum ((t (:foreground "dim gray" :slant italic))) t))
+ '(nil nil t)
+ '(package-selected-packages
+   (quote
+    (toml-mode haskell-mode rust-mode php-mode auto-complete-clang markdown-preview-mode flymd zenburn-theme yaml-mode web-mode use-package super-save ssh-config-mode spacemacs-theme smex rpm-spec-mode rainbow-mode rainbow-delimiters powerline move-text markdown-mode magit js2-mode ido-vertical-mode ido-ubiquitous flyspell-correct-ivy flycheck flx-ido exec-path-from-shell easy-kill deft ace-window))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)
-;; End:
+;;; init.el ends here

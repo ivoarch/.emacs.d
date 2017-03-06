@@ -45,3 +45,6 @@ flycheck_*.el
 
 # projectiles files
 .projectile
+
+# recentf
+save-recentf.el

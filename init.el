@@ -538,19 +538,17 @@
  ;; If there is more than one, they won't work right.
  '(auto-image-file-mode 1)
  '(browse-url-generic-program "gnome-open")
+ '(doc-view-continuous t)
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startupinhibit-startup-screen t)
  '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!")
- '(nil nil t)
- '(package-selected-packages
-   (quote
-    (toml-mode haskell-mode rust-mode php-mode auto-complete-clang markdown-preview-mode flymd zenburn-theme yaml-mode web-mode use-package super-save ssh-config-mode spacemacs-theme smex rpm-spec-mode rainbow-mode rainbow-delimiters powerline move-text markdown-mode magit js2-mode ido-vertical-mode ido-ubiquitous flyspell-correct-ivy flycheck flx-ido exec-path-from-shell easy-kill deft ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(linum ((t (:foreground "dim gray" :slant italic))) t)
+ ))
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)
 ;;; init.el ends here

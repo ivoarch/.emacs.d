@@ -212,6 +212,12 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; bring up help for key bindings
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
 ;; Enable restarting Emacs from within Emacs
 (use-package restart-emacs
   :ensure t)
@@ -371,6 +377,14 @@
   :ensure t
   :bind ("M-x" . smex))
 
+(use-package auto-complete
+  :ensure t
+  :init
+  (progn
+    (ac-config-default)
+    (global-auto-complete-mode t)
+    ))
+
 (use-package markdown-mode
   :ensure t
   :mode (("\\.md$"        . markdown-mode)
@@ -418,6 +432,15 @@
   :ensure t
   :init
   (autoload 'js2-mode "js2-mode" nil t))
+
+(use-package ggtags
+  :ensure t
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                (ggtags-mode 1))))
+  )
 
 (use-package sh-script
   :ensure t
@@ -542,13 +565,16 @@
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startupinhibit-startup-screen t)
  '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!")
+ '(nil nil t)
+ '(package-selected-packages
+   (quote
+    (yasnippet which-key toml-mode haskell-mode rust-mode php-mode auto-complete-clang markdown-preview-mode flymd zenburn-theme yaml-mode web-mode use-package super-save ssh-config-mode spacemacs-theme smex rpm-spec-mode rainbow-mode rainbow-delimiters powerline move-text markdown-mode magit js2-mode ido-vertical-mode ido-ubiquitous flyspell-correct-ivy flycheck flx-ido exec-path-from-shell easy-kill deft ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(linum ((t (:foreground "dim gray" :slant italic))) t)
- ))
+ '(linum ((t (:foreground "dim gray" :slant italic)))))
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)
 ;;; init.el ends here

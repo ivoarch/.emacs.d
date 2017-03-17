@@ -5,6 +5,9 @@ savefile/
 session*
 smex-items
 
+ac-comphist.dat
+.mc-lists.el
+
 \#*\#
 /.emacs.desktop
 /.emacs.desktop.lock

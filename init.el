@@ -8,6 +8,23 @@
 (provide 'init.el)
 (require 'package)
 
+(defvar init-file-location (concat user-emacs-directory "init.el"))
+(defconst savefile-dir (expand-file-name "savefile" user-emacs-directory))
+
+;; Reload init file
+(defun reload-init-file ()
+  "Reload the init file."
+  (interactive)
+  (load-file init-file-location))
+(global-set-key (kbd "C-c r") 'reload-init-file)
+
+;; Open .emacs init
+(defun open-init-file ()
+  "Open the init file."
+  (interactive)
+  (find-file init-file-location))
+(global-set-key (kbd "C-c i") 'open-init-file)
+
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives
@@ -36,7 +53,9 @@
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
-(defconst savefile-dir (expand-file-name "savefile" user-emacs-directory))
+;; Reduce the frequency of garbage collection by making it happen on
+;; each 25MB of allocated data (the default is on every 0.76MB)
+(setq gc-cons-threshold 25000000)
 
 ;; create the savefile dir if it doesn't exist
 (unless (file-exists-p savefile-dir)
@@ -50,15 +69,20 @@
 (if (fboundp 'use-file-dialog) (setq use-file-dialog nil))
 (if (fboundp 'use-dialog-box) (setq use-dialog-box nil))
 
+;; Maximize
+(toggle-frame-maximized)
+
 ;; no fringes
 (set-fringe-mode 0)
 
 ;; Show a marker in the left fringe for lines not in the buffer
 (setq indicate-empty-lines t)
 
-;; set font for all windows
+;; Set font
+;;(add-to-list 'default-frame-alist
+;;             '(font . "Fira Mono-14:width=condensed:weight=light"))
 (add-to-list 'default-frame-alist
-            '(font . "-*-Hack-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+             '(font . "Dejavu Sans Mono 12"))
 
 ;; cursor style
 (setq-default cursor-type 'bar)
@@ -78,6 +102,9 @@
 
 ;; disable the annoying bell ring
 (setq ring-bell-function 'ignore)
+
+;; show file size
+(size-indication-mode t)
 
 ;; disable startup screen
 (setq inhibit-startup-screen t)
@@ -341,6 +368,12 @@
   (setq whitespace-line-column 80) ;; limit line length
   (setq whitespace-style '(face tabs empty trailing lines-tail)))
 
+(use-package multiple-cursors
+  :ensure t
+  :bind (("M-." . mc/mark-next-like-this)
+         ("M-," . mc/unmark-next-like-this)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+
 (use-package ido
   :ensure t
   :bind (("C-x f" . ido-find-file))
@@ -565,10 +598,9 @@
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startupinhibit-startup-screen t)
  '(initial-scratch-message ";; scratch buffer created -- Happy Hacking ivo!!")
- '(nil nil t)
  '(package-selected-packages
    (quote
-    (yasnippet which-key toml-mode haskell-mode rust-mode php-mode auto-complete-clang markdown-preview-mode flymd zenburn-theme yaml-mode web-mode use-package super-save ssh-config-mode spacemacs-theme smex rpm-spec-mode rainbow-mode rainbow-delimiters powerline move-text markdown-mode magit js2-mode ido-vertical-mode ido-ubiquitous flyspell-correct-ivy flycheck flx-ido exec-path-from-shell easy-kill deft ace-window))))
+    (multiple-cursors yasnippet which-key toml-mode haskell-mode rust-mode php-mode auto-complete-clang markdown-preview-mode flymd zenburn-theme yaml-mode web-mode use-package super-save ssh-config-mode spacemacs-theme smex rpm-spec-mode rainbow-mode rainbow-delimiters powerline move-text markdown-mode magit js2-mode ido-vertical-mode ido-ubiquitous flyspell-correct-ivy flycheck flx-ido exec-path-from-shell easy-kill deft ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

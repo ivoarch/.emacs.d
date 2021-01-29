@@ -51,3 +51,5 @@ flycheck_*.el
 
 # recentf
 save-recentf.el
+
+transient/

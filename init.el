@@ -73,7 +73,7 @@
 (toggle-frame-maximized)
 
 ;; no fringes
-(set-fringe-mode 0)
+;;(set-fringe-mode 0)
 
 ;; Show a marker in the left fringe for lines not in the buffer
 (setq indicate-empty-lines t)
@@ -256,7 +256,9 @@
   :bind (("C-x o" . ace-window)))
 
 (use-package zenburn-theme
-  :ensure t)
+	     :ensure t
+	     :config
+	     (load-theme 'zenburn t))
 
 (use-package auto-complete-clang
   :ensure t)
@@ -388,10 +390,10 @@
         ido-auto-merge-work-directories-length -1)
   (ido-mode +1))
 
-(use-package ido-ubiquitous
-  :ensure t
-  :config
-  (ido-ubiquitous-mode +1))
+;;(use-package ido-ubiquitous
+;;  :ensure t
+;;  :config
+;;  (ido-ubiquitous-mode +1))
 
 (use-package ido-vertical-mode
   :ensure t
@@ -505,10 +507,10 @@
          ("/known_hosts\\'"       . ssh-known-hosts-mode)
          ("/authorized_keys2?\\'" . ssh-authorized-keys-mode)))
 
-(use-package makefile-mode
-  :init
-  (add-hook 'makefile-gmake-mode-hook
-            (lambda () (setq indent-tabs-mode nil))))
+;;(use-package makefile-mode
+;;  :init
+;;  (add-hook 'makefile-gmake-mode-hook
+;;            (lambda () (setq indent-tabs-mode nil))))
 
 (use-package flycheck
   :ensure t

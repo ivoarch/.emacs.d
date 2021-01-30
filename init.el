@@ -194,6 +194,22 @@
   (interactive)
   (insert (format-time-string "%Y-%m-%dT%T%z")))
 
+(defun termux-p ()
+  "Check if Emacs is running under Termux."
+  (string-match-p (regexp-quote "/com.termux/")
+                  (expand-file-name "~")))
+
+;; Browse URL functionality in Termux
+(when (termux-p)
+  (use-package browse-url :ensure nil
+    :config
+    (advice-add 'browse-url-default-browser :override
+                (lambda (url &rest args)
+                  (start-process-shell-command "open-url"
+                                               nil
+                                               (concat "am start -a android.intent.action.VIEW --user 0 -d "
+                                                       url))))))
+
 ;; Jump from file to containing directory
 (global-set-key (kbd "C-x C-j") #'dired-jump) (autoload 'dired-jump "dired")
 
@@ -256,9 +272,9 @@
   :bind (("C-x o" . ace-window)))
 
 (use-package zenburn-theme
-	     :ensure t
-	     :config
-	     (load-theme 'zenburn t))
+  :ensure t
+  :config
+  (load-theme 'zenburn t))
 
 (use-package auto-complete-clang
   :ensure t)
